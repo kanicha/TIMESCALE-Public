@@ -69,9 +69,13 @@ public class EnemyAttackEmitter : MonoBehaviour
             _attackWaitTimeList.Add(choicePattern);
         }
 
-        _broker.Publish(EventList.GameSystem.StandbyEnemyAttack.GetEvent(enemyBase, _randomAttackNum, _attackWaitTimeList));
+        // 表示するアイコンの種類の選定を行う
+        if (_randomAttackNum != 2)
+            _broker.Publish(EventList.GameSystem.StandbyEnemyAttack.GetEvent(enemyBase, _randomAttackNum, _attackWaitTimeList, true));
+        else 
+            _broker.Publish(EventList.GameSystem.StandbyEnemyAttack.GetEvent(enemyBase, _randomAttackNum, _attackWaitTimeList, false));
     }
-    
+     
     /// <summary>
     /// 発動処理
     /// </summary>

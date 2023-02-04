@@ -40,7 +40,7 @@ public class UIManager : MonoBehaviour
         _broker.Receive<EventList.GameSystem.StandbyEnemyAttack>()
             .Subscribe(x =>
             {
-                _enemyAttackUI.ShowAttackIcon(x.AttackWaitTime);
+                _enemyAttackUI.ShowAttackIcon(x.AttackWaitTime, x.isAttack);
             }).AddTo(this);
 
         _broker.Receive<EventList.UI.AddBuff>().Subscribe(x =>

@@ -55,11 +55,12 @@ public sealed class EventList
         /// 第一引数: エネミーベース
         /// 第二引数: 抽選したスキル
         /// </summary>
-        public sealed class StandbyEnemyAttack : EventMessage<StandbyEnemyAttack, EnemyBase, int, List<float>>
+        public sealed class StandbyEnemyAttack : EventMessage<StandbyEnemyAttack, EnemyBase, int, List<float>, bool>
         {
             public EnemyBase EnemyBase => param1;
             public int SelectNum => param2;
             public List<float> AttackWaitTime => param3;
+            public bool isAttack => param4;
         }
         
         /// <summary>

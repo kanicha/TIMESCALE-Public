@@ -6509,6 +6509,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 538688184}
   parentObj: {fileID: 2015176275}
+  buffIcon: {fileID: 21300000, guid: 37f14d98021478047a0abb64fe7f8cb4, type: 3}
   createNumFive:
   - {fileID: 4492447826108809666, guid: 35a958979edc3fa43a691b0add5e6427, type: 3}
   - {fileID: 9053483383770589655, guid: 71afa12898c4c4f4b9dca407cd53d127, type: 3}

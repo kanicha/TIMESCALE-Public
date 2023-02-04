@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// エネミーの攻撃タイミングをアイコンで表示する処理クラス
@@ -12,6 +12,7 @@ public class EnemyAttackTimingUI : MonoBehaviour
     private Transform canvas;
     [SerializeField, Tooltip("入れる親オブジェクト")]
     private Transform parentObj;
+    [SerializeField, Tooltip("バフのアイコン画像")] private Sprite buffIcon;
 
     [Header("生成を行う横幅配列")] 
     [SerializeField] private List<List<GameObject>> createWeightList = new List<List<GameObject>>();
@@ -54,7 +55,8 @@ public class EnemyAttackTimingUI : MonoBehaviour
     /// アタックタイミング表示
     /// </summary>
     /// <param name="attackTiming"> アタックタイミングが入っているリスト </param>
-    public void ShowAttackIcon(List<float> attackTiming)
+    /// <param name="isAttack"> 攻撃どうか </param>
+    public void ShowAttackIcon(List<float> attackTiming, bool isAttack)
     {
         // アタックタイミングの値と現在のタイマーの最大値を見る
         foreach (var timing in attackTiming)
@@ -96,6 +98,12 @@ public class EnemyAttackTimingUI : MonoBehaviour
           // 生成を行ったら親子関係の変更を行う
           // 攻撃時間で分岐を行って座標が入っているオブジェクトを親として入れる
           _createdObj.Last().transform.parent = parentObj.transform;
+          
+          // バフだった場合、画像を変更させる
+          if (!isAttack)
+          {
+              _createdObj[0].GetComponent<Image>().sprite = buffIcon;
+          }
         }
     }
 }
