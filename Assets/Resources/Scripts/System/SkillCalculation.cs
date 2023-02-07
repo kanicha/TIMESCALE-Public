@@ -102,8 +102,12 @@ public class SkillCalculation : MonoBehaviour
         }
         
         Debug.Log("ダメージ" + calcDamage);
-        Debug.Log(EnemyManager.enemyHP);
-
+        
+        // 敵のHPが0以下にならないように補正を行う
+        if (EnemyManager.enemyHP <= 0)
+        {
+            EnemyManager.enemyHP = 0;
+        }
     }
 
     /// <summary>
@@ -192,14 +196,15 @@ public class SkillCalculation : MonoBehaviour
         {
             // Noneだった場合は攻撃なので処理を行う
             // 計算後のダメージ
-            int calcDamage = 0;
+            float calcDamage = 0;
 
             // 攻撃
             // バフが会った場合バフ計算処理
             if (enemyBuffStatus.ActiveBuffCheck(StatusNames.BuffName.HardBlow))
             {
                 // 自身の持っているバフを掛け合わして乗算 (計算後の値を出す)
-                calcDamage = attackDamage + (int)enemyBuffStatus._hardBlowNum;
+                calcDamage = attackDamage + enemyBuffStatus._hardBlowNum;
+                
                 enemyBuffStatus.ReduceBuff(StatusNames.BuffName.HardBlow);
             }
             // なかった場合そのまま値を通す
@@ -224,26 +229,46 @@ public class SkillCalculation : MonoBehaviour
                 if (playerBuffStatus.ActiveBuffCheck(StatusNames.BuffName.HardDefense))
                 {
                     // 計算したら代入する
-                    calcDamage = ProportionCalculation(attackDamage, playerBuffStatus._hardDefenseNum);
+                    calcDamage = attackDamage * enemyBuffStatus._hardBlowNum;
+                    
+                    // -にならないように補正を行う
+                    if (calcDamage <= 0)
+                    {
+                        calcDamage = 0;
+                    }
+                    
                     playerBuffStatus.ReduceBuff(StatusNames.BuffName.HardDefense);
                 }
 
                 if (PlayerManager.playerShield >= 0)
                 {
                     SoundManager.Instance.PlaySE(3);
+
+                    calcDamage -= PlayerManager.playerShield;
+                    PlayerManager.playerShield -= (int)calcDamage;
+
+                    // -にならないように補正を行う
+                    if (calcDamage <= 0)
+                    {
+                        calcDamage = 0;
+                    }
                     
                     // 存在していたら攻撃しようとしていた値から減算を行う
-                    PlayerManager.playerHP -= (calcDamage - PlayerManager.playerShield);
+                    PlayerManager.playerHP -= (int)calcDamage;
                 }
                 else
                 {
                     SoundManager.Instance.PlaySE(3);
                     
                     // 処理
-                    PlayerManager.playerHP -= calcDamage;
+                    PlayerManager.playerHP -= (int)calcDamage;
                 }
 
-                _broker.Publish(EventList.GameSystem.EnemyAttack.GetEvent());
+                // プレイヤーのHPが0以下にいかないように補正をおこなう
+                if (PlayerManager.playerHP <= 0)
+                    PlayerManager.playerHP = 0;
+                
+                _broker.Publish(EventList.GameSystem.EnemyAttack.GetEvent((int)calcDamage));
                 _broker.Publish(EventList.OnStateChangeRequest.GetEvent(StateList.PlayerState.EnemyAttack, false));
             }
         }

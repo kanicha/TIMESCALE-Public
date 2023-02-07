@@ -244,9 +244,12 @@ public sealed class EventList
             public int Count => param4;
         }
         
-        public sealed class EnemyAttack : EventMessage<EnemyAttack>
+        /// <summary>
+        /// エネミーが攻撃した後のイベント
+        /// </summary>
+        public sealed class EnemyAttack : EventMessage<EnemyAttack, int>
         {
-            
+            public int AttackDamage => param1;
         }
     }
     

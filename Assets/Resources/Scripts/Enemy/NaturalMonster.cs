@@ -8,8 +8,8 @@ public class NaturalMonster : EnemyBase
         EnemyID = 1;
         
         EnemyName = "何の変哲もないモンスター";
-        // 仮に200
-        EnemyHP = 200;
+        // 仮に120
+        EnemyHP = 120;
         
         /*
         AttackTimePatternA.Add(8);
@@ -58,10 +58,10 @@ public class NaturalMonster : EnemyBase
     /// </summary>
     public override void OnAttackPatternC()
     {
-        // 5秒）強撃30％を3回得る
+        // 5秒）強撃10％を2回得る
         Debug.Log("Cアタック");
         EventEmitter.Instance.Broker.Publish(EventList.GameSystem.
-            EnemyAttackCal.GetEvent(StatusNames.BuffName.HardBlow, 0, 30, 3));
+            EnemyAttackCal.GetEvent(StatusNames.BuffName.HardBlow, 0, 1.10f, 2));
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ public class NaturalMonster : EnemyBase
         // 8秒）5ダメージ
         Debug.Log("Dアタック");
         EventEmitter.Instance.Broker.Publish(EventList.GameSystem.
-            EnemyAttackCal.GetEvent(StatusNames.BuffName.None, 5, 0, 3));
+            EnemyAttackCal.GetEvent(StatusNames.BuffName.None, 5, 0, 0));
     }
     
     /// <summary>

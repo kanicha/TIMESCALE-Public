@@ -47,6 +47,7 @@ public class BuffIconUI : MonoBehaviour
                 break;
             case StatusNames.BuffName.Shield:
                 createObj = iconObject[3];
+                
                 break;
             default:
                 break;

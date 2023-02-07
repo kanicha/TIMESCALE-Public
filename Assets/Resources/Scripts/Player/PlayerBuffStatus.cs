@@ -225,7 +225,7 @@ public class PlayerBuffStatus : MonoBehaviour
         }
         else
         {
-            Debug.Log("こうぼいう");
+            Debug.Log("更新");
 
             // すでに存在していた場合は更新
             _buffDictionary[buffName] = buffTime;

@@ -74,7 +74,7 @@ public class UIManager : MonoBehaviour
             
         }).AddTo(this);
 
-        // 仮での追加されたときに呼ばれるやつ
+        // Skillのバーが仮に配置された時
         GameManager.Instance.skillListReservation.ObserveAdd().Subscribe(x =>
         {
             _skillToGage.ToGageReservation(x.Index);
@@ -84,16 +84,44 @@ public class UIManager : MonoBehaviour
         {
             _skillToGage.ReservationObjDelete();
         }).AddTo(this);
+        
+        //プレイヤーのHPの変更が行われた時
+        this.ObserveEveryValueChanged(x => PlayerManager.playerHP)
+            .Where(_ => !StateManager.HasFlag(StateList.PlayerState.Init))
+            .Subscribe(_ =>
+            {
+                _playerHpUI.ShowHP();
+                _playerHpUI.SliderHPViewUI();
+            }).AddTo(this);
+        
+        // エネミーのHP変更が行われた時
+        this.ObserveEveryValueChanged(x => EnemyManager.enemyHP)
+            .Where(_ => !StateManager.HasFlag(StateList.PlayerState.Init))
+            .Subscribe(_ =>
+            {
+                _enemyHpUI.InitShowHP();
+                _enemyHpUI.ShowHP();
+                _enemyHpUI.EnemySliderHPViewUI();
+            }).AddTo(this);
+        
+        // プレイヤーが攻撃した時
+        _broker.Receive<EventList.GameSystem.ActiveAttack>()
+            .Subscribe(x =>
+            {
+                _enemyHpUI.ShowDamageUI(x.AttackDamage);
+            }).AddTo(this);
+        
+        // エネミーが攻撃した時
+        _broker.Receive<EventList.GameSystem.EnemyAttack>()
+            .Subscribe(x =>
+            {
+                _playerHpUI.ShowDamageUI(x.AttackDamage);
+            }).AddTo(this);
     }
 
     private void Update()
     {
         _timer.TimerUIDraw();
         _enemyUI.ShowEnemyName();
-        
-        // HP監視して変更が行われたら呼びたいな
-        _playerHpUI.PlayerSliderHPViewUI();
-        _enemyHpUI.EnemySliderHPViewUI();
-        
     }
 }
